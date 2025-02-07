@@ -14,14 +14,14 @@ class PokemonPagingSource @Inject constructor(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, PokedexListEntry> {
         return try {
-            val nextPage = params.key ?: 0
-            val response = pokeApi.getPokemonList(limit = params.loadSize, offset = nextPage)
+            val page = params.key ?: 0
+            val response = pokeApi.getPokemonList(limit = params.loadSize, offset = page * params.loadSize)
             val entries = mapPokemonListToDomain(response)
-            Log.d("PagingSource", "Loading page: $nextPage, loadSize: ${params.loadSize}")
+            Log.d("PagingSource", "Loading page: $page, loadSize: ${params.loadSize}")
             LoadResult.Page(
                 data = entries,
-                prevKey = if (nextPage == 0) null else nextPage - params.loadSize,
-                nextKey = if (entries.isEmpty()) null else nextPage + params.loadSize
+                prevKey = if (page == 0) null else page - 1,
+                nextKey = if (entries.isEmpty()) null else page + 1
             )
 
         } catch (e: Exception) {
@@ -35,5 +35,4 @@ class PokemonPagingSource @Inject constructor(
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
-
 }
