@@ -2,22 +2,23 @@ package com.smtersoyoglu.pokedex.presentation.pokemon_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smtersoyoglu.pokedex.common.Resource
+import androidx.paging.cachedIn
 import com.smtersoyoglu.pokedex.domain.usecase.GetPokemonListUseCase
+import com.smtersoyoglu.pokedex.domain.usecase.SearchPokemonUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PokemonListViewModel @Inject constructor(
-    private val getPokemonListUseCase: GetPokemonListUseCase
+    private val getPokemonListUseCase: GetPokemonListUseCase,
+    private val searchPokemonUseCase: SearchPokemonUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PokemonListState())
@@ -27,24 +28,55 @@ class PokemonListViewModel @Inject constructor(
         getPokemonList()
     }
 
-    private fun getPokemonList(limit: Int = 20, offset: Int = 0) {
-        getPokemonListUseCase(limit, offset)
-            .onStart { _uiState.update { it.copy(isLoading = true) } }
-            .onCompletion { _uiState.update { it.copy(isLoading = false) } }
-            .onEach { resource ->
-                when (resource) {
-                    is Resource.Success -> _uiState.update {
-                        it.copy(
-                            pokemonList = resource.data ?: emptyList()
-                        )
-                    }
+    private var searchJob: Job? = null
 
-                    is Resource.Error -> _uiState.update {
-                        it.copy(
-                            error = resource.message ?: "Unknown error"
-                        )
-                    }
-                }
-            }.launchIn(viewModelScope)
+    fun onSearchQueryChanged(query: String) {
+        _uiState.update { it.copy(searchQuery = query) }
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            if (query.isNotEmpty()) {
+                delay(300) // Debounce 300ms
+                searchPokemon(query)
+            } else {
+                _uiState.update { it.copy(searchResults = emptyList()) }
+            }
+        }
     }
+
+    private fun searchPokemon(query: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                val results = searchPokemonUseCase(query)
+                _uiState.update {
+                    it.copy(
+                        searchResults = results.data ?: emptyList(),
+                        isLoading = false,
+                        error = if (results.data.isNullOrEmpty()) "No results found" else ""
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        error = e.message ?: "Search failed",
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    fun getPokemonList() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = "", searchResults = emptyList()) }
+            try {
+                val pokemonFlow = getPokemonListUseCase().cachedIn(viewModelScope)
+                _uiState.update { it.copy(pokemonList = pokemonFlow, isLoading = false) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message ?: "Unknown error", isLoading = false) }
+            }
+        }
+    }
+
+
 }

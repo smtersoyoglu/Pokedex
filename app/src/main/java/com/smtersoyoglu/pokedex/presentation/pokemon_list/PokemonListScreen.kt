@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,10 +15,17 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,6 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.smtersoyoglu.pokedex.domain.model.PokedexListEntry
 
@@ -43,38 +53,106 @@ fun PokemonListScreen(
     viewModel: PokemonListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val pokemonItems = uiState.pokemonList?.collectAsLazyPagingItems()
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color(0xFF1E1E1E))) {
-        Column {
+    Scaffold(
+        topBar = {
             TopAppBar(
-                title = { Text("Pokedex", color = Color.White, fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.topAppBarColors(Color(0xFFE63946))
+                title = { Text("Pokedex", color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFE63946))
             )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            if (uiState.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            } else if (uiState.error.isNotEmpty()) {
-                Text(
-                    text = uiState.error,
-                    color = Color.Red,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .background(Color(0xFF1E1E1E))
+                .fillMaxSize()
+        ) {
+            Column {
+                // CustomSearchBar kullanımı, aktiflik animasyonunu devre dışı bırakıyoruz.
+                SearchSection(
+                    searchQuery = uiState.searchQuery,
+                    onQueryChange = viewModel::onSearchQueryChanged
                 )
-            } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2), // ✅ Grid yapısını ekledik
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    items(uiState.pokemonList) { pokemon ->
-                        PokemonCard(pokemon = pokemon)
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (uiState.searchQuery.isNotEmpty()) {
+                    if (uiState.isLoading) {
+                        FullScreenLoading()
+                    } else if (uiState.error.isNotEmpty()) {
+                        FullScreenError(onRetry = { viewModel.onSearchQueryChanged(uiState.searchQuery) })
+                    } else {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            items(uiState.searchResults) { pokemon ->
+                                PokemonCard(pokemon = pokemon)
+                            }
+                        }
+                    }
+                } else {
+                    when {
+                        uiState.error.isNotEmpty() -> {
+                            FullScreenError(onRetry = { viewModel.getPokemonList() })
+                        }
+                        pokemonItems?.loadState?.refresh is LoadState.Loading -> {
+                            FullScreenLoading()
+                        }
+                        else -> {
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(2),
+                                modifier = Modifier.padding(8.dp)
+                            ) {
+                                items(pokemonItems?.itemCount ?: 0) { index ->
+                                    pokemonItems?.get(index)?.let { pokemon ->
+                                        PokemonCard(pokemon = pokemon)
+                                    }
+                                }
+                                when (pokemonItems?.loadState?.append) {
+                                    is LoadState.Loading -> {
+                                        item { LoadingItem() }
+                                    }
+                                    is LoadState.Error -> {
+                                        item { ErrorItem(onRetry = { pokemonItems.retry() }) }
+                                    }
+                                    else -> {}
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchSection(searchQuery: String, onQueryChange: (String) -> Unit) {
+    SearchBar(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        inputField = {
+            SearchBarDefaults.InputField(
+                query = searchQuery,
+                onQueryChange = onQueryChange,
+                onSearch = {},
+                expanded = false,
+                onExpandedChange = {},
+                placeholder = { Text("Input Pokemon name") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            )
+        },
+        expanded = false,
+        onExpandedChange = {},
+    ) {}
+}
+
 
 @Composable
 fun PokemonCard(pokemon: PokedexListEntry) {
@@ -129,4 +207,59 @@ fun getPokemonBackgroundColor(number: Int): Color {
         Color(0xFFE91E63)
     )
     return colors[number % colors.size]
+}
+
+@Composable
+fun FullScreenLoading() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF1E1E1E)),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(color = Color.White)
+    }
+}
+
+@Composable
+fun FullScreenError(onRetry: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF1E1E1E)),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Error loading data", color = Color.Red)
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = onRetry) {
+                Text("Retry")
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingItem() {
+    CircularProgressIndicator(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        color = Color.White
+    )
+}
+
+@Composable
+fun ErrorItem(onRetry: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Error loading more items", color = Color.Red)
+        Button(onClick = onRetry) {
+            Text("Retry")
+        }
+    }
 }
