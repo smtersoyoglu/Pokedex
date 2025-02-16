@@ -25,9 +25,9 @@ fun PokeballBackground(modifier: Modifier) {
         drawLine(Color.Black.copy(alpha = 0.3f), Offset(0f, center.y), Offset(size.width, center.y), strokeWidth = 8f)
 
         // Orta beyaz çember
-        drawCircle(Color.White.copy(alpha = 0.3f), radius / 3, center, style = Stroke(width = 5f))
+        drawCircle(Color.White.copy(alpha = 0.5f), radius / 3, center, style = Stroke(width = 5f))
 
         // İç siyah daire
-        drawCircle(Color.Black.copy(alpha = 0.3f), radius / 3 - 3f, center)
+        drawCircle(Color.Black.copy(alpha = 0.5f), radius / 3 - 3f, center)
     }
 }

@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.smtersoyoglu.pokedex.navigation.Screens
 import com.smtersoyoglu.pokedex.presentation.pokemon_list.components.PokemonCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +51,9 @@ fun PokemonListScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
-        Column(modifier = Modifier.fillMaxSize().padding(bottom = 16.dp)) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 16.dp)) {
             TopAppBar(
                 title = { Text("Pokedex", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFE63946))
@@ -86,7 +89,9 @@ fun PokemonListScreen(
                     items(uiState.searchResults) { pokemon ->
                         PokemonCard(
                             pokemon = pokemon,
-                            onClick = {/*navigate*/}
+                            onClick = {
+                                navController.navigate(Screens.PokemonDetailScreen(pokemon.name))
+                            }
                         )
                     }
                 }
@@ -103,7 +108,9 @@ fun PokemonListScreen(
                             pagingItems[index]?.let { pokemon ->
                                 PokemonCard(
                                     pokemon = pokemon,
-                                    onClick = {/*navigate*/}
+                                    onClick = {
+                                        navController.navigate(Screens.PokemonDetailScreen(pokemon.name))
+                                    }
                                 )
                             }
                         }
@@ -122,6 +129,7 @@ fun PokemonListScreen(
                                         }
                                     }
                                 }
+
                                 loadState.append is LoadState.Loading -> {
                                     item(span = { GridItemSpan(maxLineSpan) }) {
                                         Box(
@@ -134,6 +142,7 @@ fun PokemonListScreen(
                                         }
                                     }
                                 }
+
                                 loadState.refresh is LoadState.Error -> {
                                     val e = loadState.refresh as LoadState.Error
                                     item(span = { GridItemSpan(maxLineSpan) }) {
@@ -151,6 +160,7 @@ fun PokemonListScreen(
                                         }
                                     }
                                 }
+
                                 loadState.append is LoadState.Error -> {
                                     val e = loadState.append as LoadState.Error
                                     item(span = { GridItemSpan(maxLineSpan) }) {

@@ -24,18 +24,31 @@ class PokemonListViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PokemonListState())
     val uiState: StateFlow<PokemonListState> = _uiState.asStateFlow()
 
+    private var searchJob: Job? = null
+
     init {
         getPokemonList()
     }
 
-    private var searchJob: Job? = null
+
+    private fun getPokemonList() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = "", searchResults = emptyList()) }
+            try {
+                val pokemonFlow = getPokemonListUseCase().cachedIn(viewModelScope)
+                _uiState.update { it.copy(pokemonList = pokemonFlow, isLoading = false) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message ?: "Unknown error", isLoading = false) }
+            }
+        }
+    }
 
     fun onSearchQueryChanged(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             if (query.isNotEmpty()) {
-                delay(300) // Debounce 300ms
+                delay(300)
                 searchPokemon(query)
             } else {
                 _uiState.update { it.copy(searchResults = emptyList()) }
@@ -65,18 +78,4 @@ class PokemonListViewModel @Inject constructor(
             }
         }
     }
-
-    fun getPokemonList() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = "", searchResults = emptyList()) }
-            try {
-                val pokemonFlow = getPokemonListUseCase().cachedIn(viewModelScope)
-                _uiState.update { it.copy(pokemonList = pokemonFlow, isLoading = false) }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message ?: "Unknown error", isLoading = false) }
-            }
-        }
-    }
-
-
 }
