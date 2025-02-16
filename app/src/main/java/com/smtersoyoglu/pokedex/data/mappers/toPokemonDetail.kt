@@ -1,6 +1,6 @@
 package com.smtersoyoglu.pokedex.data.mappers
 
-import com.smtersoyoglu.pokedex.R
+import com.smtersoyoglu.pokedex.common.TypeColors
 import com.smtersoyoglu.pokedex.data.remote.dto.Pokemon
 import com.smtersoyoglu.pokedex.data.remote.dto.Type
 import com.smtersoyoglu.pokedex.domain.model.PokemonDetail
@@ -22,14 +22,10 @@ fun Pokemon.toPokemonDetail(): PokemonDetail {
 }
 
 fun Type.toTypeWithColor(): TypeWithColor {
-    val color = when (type.name.lowercase()) {
-        "fire" -> R.color.fire
-        "water" -> R.color.water
-        "grass" -> R.color.grass
-        else -> R.color.default_type
-    }
+    val color = TypeColors.getColorForType(type.name)
+
     return TypeWithColor(
         name = type.name.replaceFirstChar { it.uppercase() },
-        colorRes = color
+        color = color
     )
 }
