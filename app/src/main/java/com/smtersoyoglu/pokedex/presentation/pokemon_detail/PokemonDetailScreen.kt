@@ -36,7 +36,7 @@ import com.smtersoyoglu.pokedex.presentation.pokemon_list.components.PokeballBac
 @Composable
 fun PokemonDetailScreen(
     navController: NavController,
-    viewModel: PokemonDetailViewModel = hiltViewModel()
+    viewModel: PokemonDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val dominantColor = remember { mutableStateOf(Color.Gray) }
@@ -50,121 +50,119 @@ fun PokemonDetailScreen(
             uiState.isLoading -> FullScreenLoader()
             uiState.error.isNotBlank() -> ErrorMessage(message = uiState.error)
             else -> uiState.pokemonDetail?.let { pokemon ->
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Column(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier.fillMaxSize()) {
 
-                        Spacer(modifier = Modifier.height(88.dp))
+                    Spacer(modifier = Modifier.height(88.dp))
 
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            PokeballBackground(
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .size(280.dp)
-                            )
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(pokemon.imageUrl)
-                                    .crossfade(true)
-                                    .allowHardware(false)
-                                    .listener(
-                                        onSuccess = { _, result ->
-                                            result.drawable.toBitmap().extractDominantColor { color ->
-                                                dominantColor.value = color
-                                            }
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        PokeballBackground(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(280.dp)
+                        )
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(pokemon.imageUrl)
+                                .crossfade(true)
+                                .allowHardware(false)
+                                .listener(
+                                    onSuccess = { _, result ->
+                                        result.drawable.toBitmap().extractDominantColor { color ->
+                                            dominantColor.value = color
                                         }
-                                    )
-                                    .build(),
-                                contentDescription = pokemon.name,
-                                modifier = Modifier
-                                    .size(250.dp)
-                                    .align(Alignment.Center)
-                            )
-                        }
+                                    }
+                                )
+                                .build(),
+                            contentDescription = pokemon.name,
+                            modifier = Modifier
+                                .size(250.dp)
+                                .align(Alignment.Center)
+                        )
+                    }
 
-                        Card(
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 34.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
+                        elevation = CardDefaults.cardElevation(8.dp),
+                        shape = MaterialTheme.shapes.medium,
+                    ) {
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 34.dp, bottom = 16.dp,start = 16.dp, end = 16.dp),
-                            elevation = CardDefaults.cardElevation(8.dp),
-                            shape = MaterialTheme.shapes.medium
+                                .padding(16.dp)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
+                            // İsim ve ID
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                // İsim ve ID
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = pokemon.name,
-                                        style = MaterialTheme.typography.headlineLarge.copy(
-                                            color = dominantColor.value
-                                        )
-                                    )
-                                    Text(
-                                        text = "#${pokemon.id.toString().padStart(3, '0')}",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(16.dp))
-
-                                // Türler
-                                FlowRow(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    pokemon.types.forEachIndexed { index, type ->
-                                        TypeChip(type = type)
-                                        if (index != pokemon.types.lastIndex) {
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                        }
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(24.dp))
-
-                                // Weight & Height
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceEvenly
-                                ) {
-                                    InfoItem(
-                                        value = "${pokemon.weight} KG",
-                                        title = "Weight",
-                                        icon = R.drawable.weight
-                                    )
-                                    InfoItem(
-                                        value = "${pokemon.height} M",
-                                        title = "Height",
-                                        icon = R.drawable.height
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(24.dp))
-
-                                // Stats
                                 Text(
-                                    text = "Base Stats",
-                                    style = MaterialTheme.typography.headlineSmall.copy(
-                                        color = dominantColor.value
+                                    text = pokemon.name,
+                                    style = MaterialTheme.typography.headlineLarge.copy(
+                                        color = Color.Black
                                     )
                                 )
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    pokemon.stats.forEach { (stat, value) ->
-                                        AnimatedStatBar(
-                                            stat = stat,
-                                            value = value,
-                                            maxValue = 300,
-                                            color = dominantColor.value
-                                        )
+                                Text(
+                                    text = "#${pokemon.id.toString().padStart(3, '0')}",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Türler
+                            FlowRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                pokemon.types.forEachIndexed { index, type ->
+                                    TypeChip(type = type)
+                                    if (index != pokemon.types.lastIndex) {
+                                        Spacer(modifier = Modifier.width(8.dp))
                                     }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            // Weight & Height
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                InfoItem(
+                                    value = "${pokemon.weight} KG",
+                                    title = "Weight",
+                                    icon = R.drawable.weight
+                                )
+                                InfoItem(
+                                    value = "${pokemon.height} M",
+                                    title = "Height",
+                                    icon = R.drawable.height
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            // Stats
+                            Text(
+                                text = "Base Stats",
+                                style = MaterialTheme.typography.headlineSmall.copy(
+                                    color = Color.Black
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                pokemon.stats.forEach { (stat, value) ->
+                                    AnimatedStatBar(
+                                        stat = stat,
+                                        value = value,
+                                        maxValue = 300,
+                                        color = dominantColor.value
+                                    )
                                 }
                             }
                         }

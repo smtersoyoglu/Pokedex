@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 data class PokemonListState(
     val isLoading: Boolean = false,
     val pokemonList: Flow<PagingData<PokedexListEntry>>? = null,
-    val searchResults: List<PokedexListEntry> = emptyList(), // Arama sonuçları
+    val searchResults: List<PokedexListEntry> = emptyList(),
     val error: String = "",
-    val searchQuery: String = "" // Arama sorgusu
+    val searchQuery: String = ""
 )

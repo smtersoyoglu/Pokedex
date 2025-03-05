@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -28,12 +29,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.smtersoyoglu.pokedex.R
 import com.smtersoyoglu.pokedex.navigation.Screens
 import com.smtersoyoglu.pokedex.presentation.pokemon_list.components.PokemonCard
 
@@ -56,6 +59,14 @@ fun PokemonListScreen(
             .padding(bottom = 16.dp)) {
             TopAppBar(
                 title = { Text("Pokedex", color = Color.White) },
+                actions = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.pokeball),
+                        contentDescription = "Pokeball Icon",
+                        tint = Color.White,
+                        modifier = Modifier.padding(end = 16.dp).size(32.dp)
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFE63946))
             )
 
