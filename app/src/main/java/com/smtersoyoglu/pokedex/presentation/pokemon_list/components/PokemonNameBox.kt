@@ -17,6 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.smtersoyoglu.pokedex.ui.theme.righteous_regular
 
 @Composable
 fun PokemonNameBox(name: String) {
@@ -33,9 +34,10 @@ fun PokemonNameBox(name: String) {
         Text(
             text = name.replaceFirstChar { it.uppercase() },
             color = Color.Black,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
+            fontWeight = FontWeight.Normal,
+            fontSize = 18.sp,
             style = TextStyle(
+                fontFamily = righteous_regular,
                 shadow = Shadow(Color.Black.copy(alpha = 0.3f), Offset(2f, 2f), blurRadius = 4f)
             ),
             modifier = Modifier.align(Alignment.Center)

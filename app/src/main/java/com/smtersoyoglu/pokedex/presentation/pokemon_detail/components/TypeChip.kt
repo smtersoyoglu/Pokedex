@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smtersoyoglu.pokedex.domain.model.TypeWithColor
+import com.smtersoyoglu.pokedex.ui.theme.righteous_regular
 
 @Composable
 fun TypeChip(type: TypeWithColor) {
@@ -23,9 +24,10 @@ fun TypeChip(type: TypeWithColor) {
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Text(
-            text = type.name,
+            text = type.name.replaceFirstChar { it.uppercase() },
             style = MaterialTheme.typography.labelMedium.copy(
                 color = androidx.compose.ui.graphics.Color.White,
+                fontFamily = righteous_regular,
                 fontSize = 18.sp
             )
         )

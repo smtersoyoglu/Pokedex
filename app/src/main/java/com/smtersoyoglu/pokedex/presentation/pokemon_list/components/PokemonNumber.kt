@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.smtersoyoglu.pokedex.ui.theme.righteous_regular
 
 @Composable
 fun PokemonNumber(number: Int, modifier: Modifier = Modifier) {
@@ -15,6 +16,7 @@ fun PokemonNumber(number: Int, modifier: Modifier = Modifier) {
         text = "#${number.toString().padStart(3, '0')}",
         color = Color.Black.copy(alpha = 0.5f),
         fontWeight = FontWeight.Bold,
+        fontFamily = righteous_regular,
         fontSize = 20.sp,
         modifier = modifier
             .padding(top = 6.dp, end = 12.dp)

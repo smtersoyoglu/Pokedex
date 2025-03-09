@@ -14,7 +14,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.smtersoyoglu.pokedex.domain.model.StatType
+import com.smtersoyoglu.pokedex.ui.theme.righteous_regular
 
 @Composable
 fun AnimatedStatBar(stat: StatType, value: Int, maxValue: Int, color: Color) {
@@ -30,8 +32,18 @@ fun AnimatedStatBar(stat: StatType, value: Int, maxValue: Int, color: Color) {
 
     Column {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(text = stat.name, style = MaterialTheme.typography.bodyMedium)
-            Text(text = "$value", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = stat.name,
+                fontSize = 16.sp,
+                fontFamily = righteous_regular,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "$value",
+                fontSize = 16.sp,
+                fontFamily = righteous_regular,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
         Spacer(modifier = Modifier.height(4.dp))
         Box(

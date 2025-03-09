@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -34,6 +35,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.smtersoyoglu.pokedex.R
 import com.smtersoyoglu.pokedex.navigation.Screens
 import com.smtersoyoglu.pokedex.presentation.pokemon_list.components.PokemonCard
+import com.smtersoyoglu.pokedex.ui.theme.righteous_regular
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +57,7 @@ fun PokemonListScreen(
                 .padding(bottom = 16.dp)
         ) {
             TopAppBar(
-                title = { Text("Pokedex", color = Color.White) },
+                title = { Text("Pokedex", fontSize = 24.sp, fontFamily = righteous_regular, color = Color.White) },
                 actions = {
                     Icon(
                         painter = painterResource(id = R.drawable.pokeball),

@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.smtersoyoglu.pokedex.ui.theme.righteous_regular
 
 @Composable
 fun InfoItem(value: String, title: String, icon: Int) {
@@ -25,11 +26,14 @@ fun InfoItem(value: String, title: String, icon: Int) {
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
+            fontFamily = righteous_regular,
             style = MaterialTheme.typography.titleMedium
+
         )
         Text(
             text = title,
-            style = MaterialTheme.typography.bodyMedium
+            fontFamily = righteous_regular,
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }

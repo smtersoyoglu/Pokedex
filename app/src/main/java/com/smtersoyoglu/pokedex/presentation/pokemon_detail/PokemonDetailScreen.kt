@@ -17,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -31,6 +33,7 @@ import com.smtersoyoglu.pokedex.presentation.pokemon_detail.components.InfoItem
 import com.smtersoyoglu.pokedex.presentation.pokemon_detail.components.AnimatedStatBar
 import com.smtersoyoglu.pokedex.presentation.pokemon_detail.components.TypeChip
 import com.smtersoyoglu.pokedex.presentation.pokemon_list.components.PokeballBackground
+import com.smtersoyoglu.pokedex.ui.theme.righteous_regular
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -100,13 +103,17 @@ fun PokemonDetailScreen(
                             ) {
                                 Text(
                                     text = pokemon.name.replaceFirstChar { it.uppercase() },
-                                    style = MaterialTheme.typography.headlineLarge.copy(
+                                    style = MaterialTheme.typography.headlineMedium.copy(
+                                        fontFamily = righteous_regular,
                                         color = Color.Black
                                     )
                                 )
                                 Text(
                                     text = "#${pokemon.id.toString().padStart(3, '0')}",
-                                    style = MaterialTheme.typography.titleLarge
+                                    color = Color.Black.copy(alpha = 0.5f),
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = righteous_regular,
+                                    style = MaterialTheme.typography.headlineSmall
                                 )
                             }
 
@@ -150,6 +157,7 @@ fun PokemonDetailScreen(
                             // Stats
                             Text(
                                 text = "Base Stats",
+                                fontFamily = righteous_regular,
                                 style = MaterialTheme.typography.headlineSmall.copy(
                                     color = Color.Black
                                 )
