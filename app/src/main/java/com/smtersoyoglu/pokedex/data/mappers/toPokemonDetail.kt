@@ -10,7 +10,7 @@ import com.smtersoyoglu.pokedex.domain.model.TypeWithColor
 fun Pokemon.toPokemonDetail(): PokemonDetail {
     return PokemonDetail(
         id = id,
-        name = name.replaceFirstChar { it.uppercase() },
+        name = name,
         types = types.map { it.toTypeWithColor() },
         height = height / 10f, // Metreye çeviriyoruz
         weight = weight / 10f, // Kilograma çeviriyoruz
@@ -25,7 +25,7 @@ fun Type.toTypeWithColor(): TypeWithColor {
     val color = TypeColors.getColorForType(type.name)
 
     return TypeWithColor(
-        name = type.name.replaceFirstChar { it.uppercase() },
+        name = type.name,
         color = color
     )
 }

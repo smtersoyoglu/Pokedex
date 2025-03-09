@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.smtersoyoglu.pokedex.R
 
 @Composable
 fun InfoItem(value: String, title: String, icon: Int) {
@@ -30,7 +29,7 @@ fun InfoItem(value: String, title: String, icon: Int) {
         )
         Text(
             text = title,
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }

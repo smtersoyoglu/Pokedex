@@ -5,7 +5,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.smtersoyoglu.pokedex.common.Constants.PAGE_SIZE
 import com.smtersoyoglu.pokedex.common.Resource
-import com.smtersoyoglu.pokedex.data.mappers.mapResultToEntry
 import com.smtersoyoglu.pokedex.data.mappers.toPokemonDetail
 import com.smtersoyoglu.pokedex.data.paging.PokemonPagingSource
 import com.smtersoyoglu.pokedex.data.remote.PokeApi
@@ -30,19 +29,6 @@ class PokemonRepositoryImpl @Inject constructor(
         ).flow
     }
 
-
-    // Repository'de güncelleme
-    override suspend fun searchPokemon(query: String): Resource<List<PokedexListEntry>> {
-        return try {
-            val allPokemon = api.getPokemonList(limit = 1000, offset = 0) // Tüm listeyi çek
-            val filtered = allPokemon.results
-                .filter { it.name.contains(query, ignoreCase = true) || it.url.split("/").last { it.isNotEmpty() } == query }
-                .map { mapResultToEntry(it) }
-            Resource.Success(filtered)
-        } catch (e: Exception) {
-            Resource.Error(e.localizedMessage ?: "Search failed")
-        }
-    }
 
     override suspend fun getPokemonInfo(pokemonName: String): Resource<PokemonDetail> {
         return try {

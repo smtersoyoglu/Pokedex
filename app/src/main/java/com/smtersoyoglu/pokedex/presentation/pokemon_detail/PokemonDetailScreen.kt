@@ -99,14 +99,14 @@ fun PokemonDetailScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = pokemon.name,
+                                    text = pokemon.name.replaceFirstChar { it.uppercase() },
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         color = Color.Black
                                     )
                                 )
                                 Text(
                                     text = "#${pokemon.id.toString().padStart(3, '0')}",
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleLarge
                                 )
                             }
 

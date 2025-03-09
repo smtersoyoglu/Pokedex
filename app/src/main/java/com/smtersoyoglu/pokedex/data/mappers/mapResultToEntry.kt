@@ -7,7 +7,7 @@ import com.smtersoyoglu.pokedex.domain.model.PokedexListEntry
 fun mapResultToEntry(result: Result): PokedexListEntry {
     val number = extractNumberFromUrl(result.url)
     return PokedexListEntry(
-        name = result.name.replaceFirstChar { it.uppercase() },
+        name = result.name,
         imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${number}.png",
         number = number
     )
