@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.smtersoyoglu.pokedex.common.Constants.PAGE_SIZE
 import com.smtersoyoglu.pokedex.common.Resource
+import com.smtersoyoglu.pokedex.common.safeCall
 import com.smtersoyoglu.pokedex.data.mappers.toPokemonDetail
 import com.smtersoyoglu.pokedex.data.paging.PokemonPagingSource
 import com.smtersoyoglu.pokedex.data.remote.PokeApi
@@ -30,13 +31,7 @@ class PokemonRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun getPokemonInfo(pokemonName: String): Resource<PokemonDetail> {
-        return try {
-            val response = api.getPokemonInfo(pokemonName)
-            Resource.Success(response.toPokemonDetail())
-        } catch (e: Exception) {
-            Resource.Error(e.localizedMessage ?: "Error occurred")
-
-        }
+    override suspend fun getPokemonInfo(pokemonName: String): Resource<PokemonDetail> = safeCall {
+        api.getPokemonInfo(pokemonName).toPokemonDetail()
     }
 }

@@ -13,7 +13,7 @@ import com.smtersoyoglu.pokedex.ui.theme.righteous_regular
 @Composable
 fun PokemonNumber(number: Int, modifier: Modifier = Modifier) {
     Text(
-        text = "#${number.toString().padStart(3, '0')}",
+        text = number.toString().padStart(3, '0'),
         color = Color.Black.copy(alpha = 0.5f),
         fontWeight = FontWeight.Bold,
         fontFamily = righteous_regular,

@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -109,7 +109,7 @@ fun PokemonDetailScreen(
                                     )
                                 )
                                 Text(
-                                    text = "#${pokemon.id.toString().padStart(3, '0')}",
+                                    text = pokemon.id.toString().padStart(3, '0'),
                                     color = Color.Black.copy(alpha = 0.5f),
                                     fontWeight = FontWeight.Bold,
                                     fontFamily = righteous_regular,
@@ -142,12 +142,12 @@ fun PokemonDetailScreen(
                             ) {
                                 InfoItem(
                                     value = "${pokemon.weight} KG",
-                                    title = "Weight",
+                                    title = stringResource(R.string.pokemon_weight),
                                     icon = R.drawable.weight
                                 )
                                 InfoItem(
                                     value = "${pokemon.height} M",
-                                    title = "Height",
+                                    title = stringResource(R.string.pokemon_height),
                                     icon = R.drawable.height
                                 )
                             }
