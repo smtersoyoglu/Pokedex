@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.smtersoyoglu.pokedex.R
@@ -38,10 +38,10 @@ import com.smtersoyoglu.pokedex.ui.theme.righteous_regular
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PokemonDetailScreen(
-    navController: NavController,
     viewModel: PokemonDetailViewModel = hiltViewModel(),
+    onBackClick: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val dominantColor = remember { mutableStateOf(Color.Gray) }
 
     Box(
@@ -177,9 +177,8 @@ fun PokemonDetailScreen(
                     }
                 }
 
-                // Floating Back Button
                 IconButton(
-                    onClick = { navController.popBackStack() },
+                    onClick = onBackClick,
                     modifier = Modifier
                         .padding(top = 44.dp, start = 16.dp)
                         .size(48.dp)

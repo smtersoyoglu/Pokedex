@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,21 +29,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.smtersoyoglu.pokedex.R
-import com.smtersoyoglu.pokedex.navigation.Screens
 import com.smtersoyoglu.pokedex.presentation.pokemon_list.components.PokemonCard
 import com.smtersoyoglu.pokedex.ui.theme.righteous_regular
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonListScreen(
-    navController: NavController,
     viewModel: PokemonListViewModel = hiltViewModel(),
+    onNavigateToDetail: (String) -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val pokemonItems = uiState.pokemonList?.collectAsLazyPagingItems()
 
     Box(
@@ -58,7 +56,14 @@ fun PokemonListScreen(
                 .padding(bottom = 16.dp)
         ) {
             TopAppBar(
-                title = { Text(stringResource(R.string.pokedex_title), fontSize = 24.sp, fontFamily = righteous_regular, color = Color.White) },
+                title = {
+                    Text(
+                        stringResource(R.string.pokedex_title),
+                        fontSize = 24.sp,
+                        fontFamily = righteous_regular,
+                        color = Color.White
+                    )
+                },
                 actions = {
                     Icon(
                         painter = painterResource(id = R.drawable.pokeball),
@@ -85,7 +90,7 @@ fun PokemonListScreen(
                             PokemonCard(
                                 pokemon = pokemon,
                                 onClick = {
-                                    navController.navigate(Screens.PokemonDetailScreen(pokemon.name))
+                                    onNavigateToDetail(pokemon.name)
                                 }
                             )
                         }
