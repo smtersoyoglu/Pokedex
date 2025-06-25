@@ -20,6 +20,7 @@ converterGson = "2.9.0"
 coilCompose = "2.2.2"
 serialization = "1.7.3"
 pagingCompose = "3.3.5"
+lottieCompose = "6.0.0"
 
 
 [libraries]
@@ -46,6 +47,7 @@ androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref =
 
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 
 androidx-palette-ktx = { group = "androidx.palette", name = "palette-ktx", version.ref = "paletteKtx" }
 

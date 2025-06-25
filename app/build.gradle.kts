@@ -60,6 +60,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // lottie
+    implementation(libs.lottie.compose)
 
     // hilt
     implementation(libs.hilt.android)
@@ -88,7 +90,6 @@ dependencies {
     // paging
     implementation (libs.androidx.paging.runtime)
     implementation (libs.androidx.paging.compose)
-
 
     implementation(libs.androidx.palette.ktx)
 

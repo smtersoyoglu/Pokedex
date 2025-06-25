@@ -20,5 +20,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Pokedex"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
  
