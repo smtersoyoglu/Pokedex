@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 sealed interface Screens {
 
     @Serializable
+    data object SplashScreen : Screens
+
+    @Serializable
     data object PokemonListScreen : Screens
 
     @Serializable
