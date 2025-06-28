@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,8 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.LottieAnimation
@@ -39,19 +42,16 @@ fun SplashScreen(onNavigate: () -> Unit) {
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFFEA1D2C), Color.White)
-                )
-            ),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize()
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.pokemon_background),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 48.dp),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -59,10 +59,9 @@ fun SplashScreen(onNavigate: () -> Unit) {
                 painter = painterResource(id = R.drawable.pokemon_text),
                 contentDescription = "Pokemon Logo",
                 modifier = Modifier
-                    .width(270.dp)
+                    .width(320.dp)
+                    .offset(y = (-20).dp)
             )
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.pokemon_splash_anim))
             val progress by animateLottieCompositionAsState(composition)
@@ -70,18 +69,25 @@ fun SplashScreen(onNavigate: () -> Unit) {
             LottieAnimation(
                 composition = composition,
                 progress = { progress },
-                modifier = Modifier.size(300.dp)
+                modifier = Modifier.size(350.dp)
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = "Loading Pokémon...",
-                fontSize = 21.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Medium,
                 fontFamily = righteous_regular,
                 color = Color(0xFFEA1D2C)
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewSplashScreen () {
+    SplashScreen(
+        onNavigate = {}
+    )
 }
